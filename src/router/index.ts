@@ -1,9 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // Bestehende Routes bleiben
+    {
+      path: '/',
+      name: 'Home',
+      beforeEnter() {
+        window.location.href = '/index.html'
+      }
+    },
     {
       path: '/de',
       name: 'GermanLanding',
@@ -18,8 +24,32 @@ const router = createRouter({
       path: '/de/validation-buyer',
       name: 'GermanValidationBuyer',
       component: () => import('../components/german/forms/BuyerForm.vue')
+    },
+    {
+      path: '/validation',
+      beforeEnter() {
+        window.location.href = '/validation.html'
+      }
+    },
+    {
+      path: '/validation-buyer',
+      beforeEnter() {
+        window.location.href = '/validation-buyer.html'
+      }
+    },
+    // Catch-all 404 route
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('../components/NotFound.vue')
     }
   ]
+})
+
+// Debug-Logging
+router.beforeEach((to, from, next) => {
+  console.log('Navigation to:', to.path)
+  next()
 })
 
 export default router
