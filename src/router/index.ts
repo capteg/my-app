@@ -13,6 +13,12 @@ const router = createRouter({
       path: '/validation',
       name: 'Validation',
       component: () => import('../components/ValidationForm.vue')
+    },
+    // Neue deutsche Route
+    {
+      path: '/de',
+      name: 'GermanLanding',
+      component: () => import('../components/german/GermanLanding.vue')
     }
   ]
 })
