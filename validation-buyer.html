@@ -1,21 +1,143 @@
-<!-- Gleicher Code wie validation.html, aber mit diesen Feldern: -->
-<div class="form-group">
-    <label for="company">Firmenname:</label>
-    <input type="text" id="company" name="company" required>
-</div>
-<div class="form-group">
-    <label for="contact">Kontakt:</label>
-    <input type="text" id="contact" name="contact" required>
-</div>
-<div class="form-group">
-    <label for="phone">Telefon:</label>
-    <input type="tel" id="phone" name="phone" required>
-</div>
-<div class="form-group">
-    <label for="categories">Interesse Kategorien:</label>
-    <input type="text" id="categories" name="categories" required>
-</div>
-<div class="form-group">
-    <label for="budget">Budget pro Monat (€):</label>
-    <input type="number" id="budget" name="budget" required>
-</div>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PureStock | Premium B2B Großhandel - Sortiment-Check</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h2>Sortiments-Anfrage für Großhändler</h2>
+    <form id="validationForm">
+        <div class="form-group">
+            <label for="company">Firmenname</label>
+            <input type="text" id="company" name="company" required autocomplete="organization">
+        </div>
+        <div class="form-group">
+            <label for="contact">Kontakt (Name)</label>
+            <input type="text" id="contact" name="contact" required autocomplete="name">
+        </div>
+        <div class="form-group">
+            <label for="phone">Telefon</label>
+            <input type="tel" id="phone" name="phone" required autocomplete="tel">
+        </div>
+        <div class="form-group">
+            <label for="volume">Bestandsvolumen (€)</label>
+            <input type="number" id="volume" name="volume" required min="0">
+        </div>
+        <button type="submit" id="submitBtn">Speichern</button>
+    </form>
+    <div id="status"></div>
+
+    <script>
+        const SHEET_URL = 'https://script.google.com/macros/s/AKfycby0xQk3HTzieR4Eg40m3aNZ5dxoiCZv1t60mA6EUipVB6qCkTtwL-QjO37zgj9DgPRqOQ/exec';
+        
+        document.getElementById('validationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const statusDiv = document.getElementById('status');
+            
+            // UI Feedback
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Wird gespeichert...';
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = 'Übertrage Daten...';
+            
+            const formData = {
+                timestamp: new Date().toLocaleString('de-DE'),
+                company: document.getElementById('company').value,
+                contact: document.getElementById('contact').value,
+                phone: document.getElementById('phone').value,
+                volume: document.getElementById('volume').value,
+                type: 'supplier'
+            };
+
+            try {
+                await fetch(SHEET_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                    mode: 'no-cors'
+                });
+                
+                // Success
+                statusDiv.className = 'success';
+                statusDiv.innerHTML = '✓ Erfolgreich gespeichert!';
+                document.getElementById('validationForm').reset();
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+            } catch (error) {
+                // Error
+                statusDiv.className = 'error';
+                statusDiv.innerHTML = '⚠️ Fehler beim Speichern. Bitte erneut versuchen.';
+                console.error('Submission error:', error);
+            } finally {
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Speichern';
+            }
+        });
+    </script>
+</body>
+</html>
