@@ -3,81 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PureStock Quick Capture</title>
+    <title>PureStock Validation</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
             padding: 20px;
         }
-        form {
-            background: white;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        .form-group {
+            margin-bottom: 15px;
         }
-        select, input, textarea, button {
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 8px;
             box-sizing: border-box;
-            font-size: 16px;
         }
         button {
-            background: #4CAF50;
+            background-color: #4CAF50;
             color: white;
+            padding: 10px 20px;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
         }
-        button:hover {
-            background: #45a049;
-        }
-        .success-message {
-            color: #4CAF50;
-            text-align: center;
+        #status {
+            margin-top: 20px;
+            padding: 10px;
             display: none;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
         }
     </style>
 </head>
 <body>
-    <form id="quickCapture">
-        <select name="type" required>
-            <option value="supplier">Lieferant</option>
-            <option value="buyer">Käufer</option>
-        </select>
-        <input type="text" name="company" placeholder="Firmenname" required>
-        <input type="text" name="contact" placeholder="Kontakt Name/Telefon" required>
-        <select name="status" required>
-            <option value="new">Neu</option>
-            <option value="interested">Interessiert</option>
-            <option value="active">Aktiv</option>
-        </select>
-        <textarea name="notes" placeholder="Wichtige Details" rows="3"></textarea>
+    <h2>Quick Capture Form</h2>
+    <form id="validationForm">
+        <div class="form-group">
+            <label for="company">Firmenname:</label>
+            <input type="text" id="company" name="company" required>
+        </div>
+        <div class="form-group">
+            <label for="contact">Kontakt:</label>
+            <input type="text" id="contact" name="contact" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Telefon:</label>
+            <input type="tel" id="phone" name="phone" required>
+        </div>
+        <div class="form-group">
+            <label for="volume">Bestandsvolumen (€):</label>
+            <input type="number" id="volume" name="volume" required>
+        </div>
         <button type="submit">Speichern</button>
-        <p id="successMessage" class="success-message">✓ Gespeichert!</p>
     </form>
+    <div id="status"></div>
 
     <script>
-        // Basis-Version ohne Sheet-Integration
-        document.getElementById('quickCapture').addEventListener('submit', async (e) => {
+        document.getElementById('validationForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData);
-            console.log('Saving:', data);
             
-            // Show success message
-            const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'block';
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-                e.target.reset();
-            }, 2000);
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = 'Wird gespeichert...';
+            
+            const formData = {
+                company: document.getElementById('company').value,
+                contact: document.getElementById('contact').value,
+                phone: document.getElementById('phone').value,
+                volume: document.getElementById('volume').value
+            };
+
+            fetch('https://script.google.com/macros/s/AKfycby0xQk3HTzieR4Eg40m3aNZ5dxoiCZv1t60mA6EUipVB6qCkTtwL-QjO37zgj9DgPRqOQ/exec', {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                mode: 'no-cors'
+            })
+            .then(response => {
+                statusDiv.className = 'success';
+                statusDiv.innerHTML = 'Erfolgreich gespeichert!';
+                document.getElementById('validationForm').reset();
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+            })
+            .catch(error => {
+                statusDiv.className = 'error';
+                statusDiv.innerHTML = 'Fehler beim Speichern. Bitte erneut versuchen.';
+            });
         });
     </script>
 </body>
