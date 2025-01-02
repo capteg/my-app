@@ -1,0 +1,50 @@
+.
+├── README.md
+├── eslint.config.js
+├── index.html
+├── jsconfig.json
+├── package-lock.json
+├── package.json
+├── postcss.config.cjs
+├── project-structure.txt
+├── public
+│   └── vite.svg
+├── src
+│   ├── App.css
+│   ├── App.jsx
+│   ├── assets
+│   │   ├── ps_purostock_logo transparent.png
+│   │   └── react.svg
+│   ├── components
+│   │   ├── common
+│   │   │   ├── Button.jsx
+│   │   │   └── WhatsAppButton.jsx
+│   │   ├── forms
+│   │   │   ├── SupplierForm.jsx
+│   │   │   └── SupplierFormWrapper.jsx
+│   │   ├── layout
+│   │   │   └── Navigation.jsx
+│   │   ├── sections
+│   │   │   ├── CTASection.jsx
+│   │   │   ├── ProblemSection.jsx
+│   │   │   ├── ProcessSection.jsx
+│   │   │   └── SolutionSection.jsx
+│   │   └── upload
+│   │       └── BulkUpload.jsx
+│   ├── constants
+│   │   └── data.js
+│   ├── hooks
+│   │   └── useForm.js
+│   ├── index.css
+│   ├── main.jsx
+│   ├── services
+│   │   ├── email.js
+│   │   └── whatsapp.js
+│   ├── utils
+│   │   └── formValdation.js
+│   └── validation
+│       └── supplierFormSchema.js
+├── tailwind.config.js
+└── vite.config.js
+
+15 directories, 33 files
