@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PureStock Quick Capture</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        form {
+            background: white;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        select, input, textarea, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .success-message {
+            color: #4CAF50;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <form id="quickCapture">
+        <select name="type" required>
+            <option value="supplier">Lieferant</option>
+            <option value="buyer">Käufer</option>
+        </select>
+        <input type="text" name="company" placeholder="Firmenname" required>
+        <input type="text" name="contact" placeholder="Kontakt Name/Telefon" required>
+        <select name="status" required>
+            <option value="new">Neu</option>
+            <option value="interested">Interessiert</option>
+            <option value="active">Aktiv</option>
+        </select>
+        <textarea name="notes" placeholder="Wichtige Details" rows="3"></textarea>
+        <button type="submit">Speichern</button>
+        <p id="successMessage" class="success-message">✓ Gespeichert!</p>
+    </form>
+
+    <script>
+        // Basis-Version ohne Sheet-Integration
+        document.getElementById('quickCapture').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            console.log('Saving:', data);
+            
+            // Show success message
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+                e.target.reset();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
